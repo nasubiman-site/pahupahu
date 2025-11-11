@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>入れるものなら入ってみろ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #yes-button {
+            position: fixed; 
+            transition: all 0.1s ease-out; /* 逃げる速度 */
+            user-select: none; 
+        }
+        
+        body {
+            overflow: hidden;
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
+
+    <!-- メインのモーダルウィンドウ -->
+    <div id="age-modal" class="bg-gray-800 p-10 rounded-xl shadow-2xl text-center max-w-md mx-4 z-10">
+        <h1 class="text-3xl font-bold mb-6">
+            パフパフ(⋈◍＞◡＜◍)✧♡
+        </h1>
+        <p id="modal-message" class="text-xl mb-8 text-gray-300">
+            あなたは18歳以上ですか？
+        </p>
+
+        <div id="button-container" class="relative flex justify-center gap-6 h-12">
+            
+            <button 
+                id="no-button"
+                onclick="showRejection()"
+                class="bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-10 rounded-lg shadow-lg"
+            >
+                いいえ
+            </button>
+        </div>
+
+        <!-- 煽りメッセージ表示エリア -->
+        <p id="taunt-message" class="text-yellow-400 h-6 mt-6 font-bold text-lg"></p>
+    </div>
+
+    <button 
+        id="yes-button"
+        onmouseover="moveButton(this)"
+        onclick="enterSite()"
+        class="bg-green-500 hover:bg-green-400 text-white font-bold py-3 px-10 rounded-lg shadow-lg cursor-pointer"
+        style="z-index: 50;"
+    >
+        はい
+    </button>
+    
+
+    <script>
+        // ボタンが逃げる時の煽りメッセージ
+        const taunts = [
+            "おっと！", "遅いね", "そこじゃない", "捕まえてごらん？", "残像だよ", "本気出して？"
+        ];
+        
+        window.onload = function() {
+            const yesButton = document.getElementById('yes-button');
+            const noButton = document.getElementById('no-button');
+            const rect = noButton.getBoundingClientRect(); 
+
+            yesButton.style.top = `${rect.top}px`;
+            yesButton.style.left = `${rect.left - yesButton.offsetWidth - 24}px`; // 24px = gap-6
+        }
+
+        /**
+         * ボタンが逃げる処理
+         */
+        function moveButton(button) {
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const buttonWidth = button.offsetWidth;
+            const buttonHeight = button.offsetHeight;
+            
+            let newX = Math.random() * (viewportWidth - buttonWidth);
+            let newY = Math.random() * (viewportHeight - buttonHeight);
+
+            const padding = 10;
+            
+            if (newX < padding) newX = padding;
+            if (newX > viewportWidth - buttonWidth - padding) newX = viewportWidth - buttonWidth - padding;
+            
+            if (newY < padding) newY = padding;
+            if (newY > viewportHeight - buttonHeight - padding) newY = viewportHeight - buttonHeight - padding;
+
+            button.style.left = `${newX}px`;
+            button.style.top = `${newY}px`;
+
+            const tauntMessage = document.getElementById('taunt-message');
+            const randomTaunt = taunts[Math.floor(Math.random() * taunts.length)];
+            tauntMessage.innerText = randomTaunt;
+        }
+
+        /**
+         * 「いいえ」を押した時の処理
+         */
+        function showRejection() {
+            const modal = document.getElementById('age-modal');
+            const yesButton = document.getElementById('yes-button');
+            if (yesButton) yesButton.remove(); // 'はい'ボタンを削除
+
+            modal.innerHTML = `
+                <h2 class="text-3xl font-bold text-gray-300">
+                    ふーん
+                </h2>
+                <p class="text-xl mt-4 text-red-400 font-bold">
+                    まあ、賢明な判断だ。
+                </p>
+                <p class="text-lg mt-2 text-gray-400">
+                    最初から「はい」が押せるとは思ってなかっただろ？
+                </p>
+            `;
+        }
+
+        /**
+         * ▼▼▼ 変更点 ▼▼▼
+         * 「はい」を押した時の処理
+         * ページ遷移を削除し、シンプルな称賛メッセージに変更
+         */
+        function enterSite() {
+            const modal = document.getElementById('age-modal');
+            const yesButton = document.getElementById('yes-button');
+            if (yesButton) yesButton.remove(); // 'はい'ボタンを削除
+
+            modal.innerHTML = `
+                <h2 class="text-3xl font-bold text-green-400">
+                    やるな。
+                </h2>
+                <p class="text-xl mt-4 text-gray-300">
+                    まさか押せるとは。
+                </p>
+            `;
+            
+            // ページ遷移（setTimeout）を削除
+        }
+    </script>
+
+</body>
+</html>
